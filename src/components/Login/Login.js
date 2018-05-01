@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter, Redirect} from 'react-router-dom';
 import './Login.css';
-import {getAuthRequest} from 'actions/auth';
+import {getAuthRequest, getIsAuthorized} from 'ducks/auth';
 
 class Login extends PureComponent {
   handleKeyPress = event => {
@@ -12,16 +12,14 @@ class Login extends PureComponent {
   };
 
   render () {
-    // const isAuthorized = false;
-    // const isAuthFailed = false;
-    const {isAuthorized, isAuthFailed} = this.props;
+    console.log (this.props);
+    const {isAuthorized} = this.props;
 
     if (isAuthorized) {
       return <Redirect to="/users/me" />;
     } else {
       return (
         <div className="login">
-          {isAuthFailed ? <p className="error">Bad credentials</p> : null}
           <p>
             Получить токен нужно на своей странице github, перейдите по адресу и создать себе токен. Запишите куда нибудь токен, так как после создания доступ к нему будет только один раз.
           </p>
@@ -37,12 +35,19 @@ class Login extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  isAuthorized: state.auth.isAuthorized,
-  isAuthFailed: state.auth.isAuthFailed,
-  key: state.auth.key,
-});
+export default connect (
+  state => ({
+    isAuthorized: getIsAuthorized (state)
+  }),
+  {getAuthRequest}
+) (Login);
 
-const mapDispatchToProps = {getAuthRequest};
+// const mapStateToProps = state => ({
+//   isAuthorized: state.auth.isAuthorized,
+//   isAuthFailed: state.auth.isAuthFailed,
+//   key: state.auth.key,
+// });
 
-export default connect (mapStateToProps, mapDispatchToProps) (Login);
+// const mapDispatchToProps = {getAuthRequest};
+
+// export default connect (mapStateToProps, mapDispatchToProps) (Login);
