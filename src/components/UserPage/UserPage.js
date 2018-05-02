@@ -1,28 +1,14 @@
 import React, {PureComponent} from 'react';
 import './UserPage.css';
-import {connect} from 'react-redux';
-import {getUsersRequest, getIsFetching, getUser} from 'ducks/users';
 
 class UserPage extends PureComponent {
-  componentDidMount = () => {
-    this.props.getUsersRequest ();
-  };
-
   render () {
-    console.log (this.props);
-
     const {user} = this.props;
     return <div className="user-info" />;
   }
 }
 
-export default connect (
-  state => ({
-    user: getUser (state),
-    isFetching: getIsFetching (state),
-  }),
-  {getUsersRequest}
-) (UserPage);
+export default UserPage;
 
 // <img src={user.image} alt={user.name} />
 // <div>

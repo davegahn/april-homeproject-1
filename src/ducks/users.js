@@ -33,7 +33,7 @@ const error = handleActions (
   null
 );
 
-const user = handleActions (
+const userProfile = handleActions (
   {
     [getUsersRequest]: (state, action) => null,
     [getUsersSuccess]: (state, action) => action.payload,
@@ -44,13 +44,13 @@ const user = handleActions (
 export default combineReducers ({
   isFetching,
   error,
-  user,
+  userProfile,
 });
 
 export {getUsersRequest, getUsersSuccess, getUsersFailure};
 
 export const getIsFetching = state => state.users.isFetching;
-export const getUser = state => state.users.user;
+export const getUserProfile = state => state.users.user;
 
 // import {getUsersRequest, getUsersSuccess, getUsersFailure} from 'actions/users';
 

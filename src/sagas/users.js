@@ -9,9 +9,11 @@ export default function* () {
 
 function* fetchUserWatch (action) {
   try {
+    action.payload = '52722c8519f516c8f200834cd2e8985fd619aad5';
+    yield console.log (action.payload);
     const response = yield call (api.getUserInformation, action.payload);
     yield console.log (response);
-    yield put (getUsersSuccess (response));
+    yield put (getUsersSuccess (response.data));
   } catch (error) {
     yield put (getUsersFailure (error));
   }

@@ -2,14 +2,12 @@ import {handleActions, createActions} from 'redux-actions';
 import {combineReducers} from 'redux';
 
 const {
-  auth: {
-    request: getAuthRequest,
-    success: getAuthSuccess
-  },
+  auth: {request: getAuthRequest, success: getAuthSuccess, logout},
 } = createActions ({
   AUTH: {
     REQUEST: null,
-    SUCCESS: null
+    SUCCESS: null,
+    LOGOUT: null,
   },
 });
 
@@ -23,9 +21,10 @@ export const key = handleActions (
 export const isAuthorized = handleActions (
   {
     [getAuthRequest]: () => false,
-    [getAuthSuccess]: () => true
+    [getAuthSuccess]: () => true,
+    [logout]: () => false,
   },
-  false
+  true // !!!! false
 );
 
 export default combineReducers ({key, isAuthorized}); //экспорт редюсеров
@@ -33,6 +32,7 @@ export default combineReducers ({key, isAuthorized}); //экспорт редю�
 export {getAuthRequest, getAuthSuccess}; // экспорт экшенов
 
 export const getIsAuthorized = state => state.auth.isAuthorized; // экспорт селекторов
+export const getLogout = state => state.auth.logout;
 
 // import {getAuthRequest, getAuthSuccess, getAuthFailure} from 'actions/auth';
 
