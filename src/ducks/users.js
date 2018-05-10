@@ -1,81 +1,49 @@
-import {combineReducers} from 'redux';
-import {handleActions, createActions} from 'redux-actions';
+import { combineReducers } from 'redux';
+import { handleActions, createActions } from 'redux-actions';
+import { fetchUserRequest, fetchUserSuccess, fetchUserFailure } from 'ducks/followers';
 
-const {
-  users: {
-    request: getUsersRequest,
-    success: getUsersSuccess,
-    failure: getUsersFailure,
-  },
-} = createActions ({
-  USERS: {
-    REQUEST: null,
-    SUCCESS: null,
-    FAILURE: null,
-  },
-});
-
-const isFetching = handleActions (
+const isFetching = handleActions(
   {
-    [getUsersRequest]: () => true,
-    [getUsersSuccess]: () => false,
-    [getUsersFailure]: () => false,
+    [fetchUserRequest]: () => true,
+    [fetchUserSuccess]: () => false,
+    [fetchUserFailure]: () => false,
   },
-  false
+  false,
 );
 
-const error = handleActions (
+const isFetched = handleActions(
   {
-    [getUsersRequest]: () => null,
-    [getUsersSuccess]: () => null,
-    [getUsersFailure]: (state, action) => action.payload,
+    [fetchUserRequest]: () => false,
+    [fetchUserSuccess]: () => true,
+    [fetchUserFailure]: () => true,
   },
-  null
+  false,
 );
 
-const userProfile = handleActions (
+const data = handleActions(
   {
-    [getUsersRequest]: (state, action) => null,
-    [getUsersSuccess]: (state, action) => action.payload,
+    [fetchUserRequest]: () => null,
+    [fetchUserSuccess]: (state, action) => action.payload,
   },
-  null
+  null,
 );
 
-export default combineReducers ({
-  isFetching,
+const error = handleActions(
+  {
+    [fetchUserRequest]: () => null,
+    [fetchUserSuccess]: () => null,
+    [fetchUserFailure]: () => (state, action) => action.error,
+  },
+  null,
+);
+
+export default combineReducers({
+  data,
   error,
-  userProfile,
+  isFetching,
+  isFetched,
 });
 
-export {getUsersRequest, getUsersSuccess, getUsersFailure};
-
+export const getUser = state => state.users.data;
 export const getIsFetching = state => state.users.isFetching;
-export const getUserProfile = state => state.users.user;
-
-// import {getUsersRequest, getUsersSuccess, getUsersFailure} from 'actions/users';
-
-// const initialState = {
-//   user: {},
-//   isFetching: false,
-//   error: null,
-// };
-
-// export default (state = initialState, action) => {
-//   switch (action.type) {
-//     case getUsersRequest.toString ():
-//       return {...state, isFetching: true};
-//     case getUsersSuccess.toString ():
-//       return {
-//         ...state,
-//         isFetching: false,
-//         user: action.payload,
-//       };
-//     case getUsersFailure.toString ():
-//       return {
-//         ...state,
-//         error: action.payload,
-//       };
-//     default:
-//       return state;
-//   }
-// };
+export const getIsFetched = state => state.users.isFetched;

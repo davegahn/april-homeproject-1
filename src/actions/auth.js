@@ -1,12 +1,8 @@
-import {createActions} from 'redux-actions';
+import { createActions } from 'redux-actions';
 
 const {
-  auth: {
-    request: getAuthRequest,
-    success: getAuthSuccess,
-    failure: getAuthFailure,
-  },
-} = createActions ({
+  auth: { request: getAuthRequest, success: getAuthSuccess, failure: getAuthFailure },
+} = createActions({
   AUTH: {
     REQUEST: null,
     SUCCESS: null,
@@ -14,4 +10,4 @@ const {
   },
 });
 
-export {getAuthRequest, getAuthSuccess, getAuthFailure};
+export { getAuthRequest, getAuthSuccess, getAuthFailure };

@@ -1,37 +1,23 @@
 import React, { PureComponent } from 'react';
-import UserPage from 'components/UserPage';
-import { Redirect } from 'react-router-dom';
-import './PrivateRoute.css';
 import { connect } from 'react-redux';
-import { getUsersRequest, getIsFetching, getUserProfile } from 'ducks/users';
-import { getIsAuthorized, setAuthLogout } from 'ducks/auth';
-class PrivateRoute extends PureComponent {
-  componentDidMount = () => {
-    this.props.getUsersRequest();
-  };
-  handleBtnClick = () => {
-    this.props.setAuthLogout();
-  };
+import { Route, Redirect } from 'react-router-dom';
+import { getIsAuthorized } from 'ducks/auth';
 
+import UserPage from 'components/UserPage';
+import './PrivateRoute.css';
+
+class PrivateRoute extends PureComponent {
   render() {
-    const { isAuthorized, userProfile } = this.props;
+    const { isAuthorized, component: Component, ...rest } = this.props;
     return (
-      <main>
-        <div className="btn-logout">
-          <button onClick={this.handleBtnClick}>Logout</button>
-        </div>
-        {isAuthorized ? <UserPage user={userProfile} /> : <Redirect to="/login" />}
-      </main>
+      <Route
+        {...rest}
+        render={props => (isAuthorized ? <Component {...props} /> : <Redirect to="/login" />)}
+      />
     );
   }
 }
 
-export default connect(
-  state => ({
-    userProfile: getUserProfile(state),
-    isFetching: getIsFetching(state),
-    isAuthorized: getIsAuthorized(state),
-    // userSecret: getUserSecret(state),
-  }),
-  { getUsersRequest, setAuthLogout },
-)(PrivateRoute);
+export default connect(state => ({
+  isAuthorized: getIsAuthorized(state),
+}))(PrivateRoute);

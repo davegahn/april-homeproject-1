@@ -1,28 +1,78 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import './UserPage.css';
+import { getUser, getIsFetching, getIsFetched } from 'ducks/users';
+
+import { fetchUserRequest, fetchTokenOwnerRequest } from 'ducks/followers';
+
+import Spinner from 'react-svg-spinner';
+import { Followers } from 'components/Followers';
 
 class UserPage extends PureComponent {
-  render () {
-    const {user} = this.props;
-    return <div className="user-info" />;
+  constructor(props) {
+    super(props);
+    const {
+      fetchTokenOwnerRequest,
+      fetchUserRequest,
+      match: {
+        params: { name },
+      },
+    } = this.props;
+    if (name === null) fetchTokenOwnerRequest();
+    else fetchUserRequest(name);
+  }
+
+  conponentDidUpdate(prevProps) {
+    const {
+      fetchTokenOwnerRequest,
+      fetchUserRequest,
+      match: {
+        params: { name },
+      },
+    } = this.props;
+
+    if (name !== prevProps.match.params.name) {
+      if (name == null) fetchTokenOwnerRequest();
+      else fetchUserRequest(name);
+    }
+  }
+
+  render() {
+    const {
+      user,
+      match: {
+        params: { name },
+      },
+      isFetching,
+      isFetched,
+    } = this.props;
+
+    if (isFetching || !isFetched) {
+      return <Spinner size="64px" color="fuchsia" gap={5} />;
+    }
+    if (!user) {
+      return <p>User {name} not found!</p>;
+    }
+    return (
+      <div>
+        <div>
+          <img src={user.avatar.url} alt={user.login} />
+          <div>
+            <h3>{user.login}</h3>
+            <p>Followers: {user.followers}</p>
+            <p>Public repos: {user.public_repos}</p>
+          </div>
+        </div>
+        <Followers login={user.login} />
+      </div>
+    );
   }
 }
 
-export default UserPage;
+const mapStateToProps = state => ({
+  user: getUser(state),
+  isFetching: getIsFetching(state),
+  isFetched: getIsFetched(state),
+});
 
-// <img src={user.image} alt={user.name} />
-// <div>
-//   <h3>{user.name}</h3>
-//   <p>{`Followers: ${user.followers}`}</p>
-//   <p>{`Public repos: ${user.repos.length}`}</p>
-// </div>4
-
-// const mapStateToProps = state => ({
-//   user: state.users.user,
-//   isFetching: state.users.isFetching,
-//   error: state.users.error,
-// });
-
-// const mapDispatchToProps = {getUsersRequest};
-
-// export default connect (mapStateToProps, mapDispatchToProps) (UserPage);
+export default connect(mapStateToProps, { fetchUserRequest, fetchTokenOwnerRequest })(UserPage);

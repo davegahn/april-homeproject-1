@@ -1,39 +1,25 @@
-import { handleActions, createActions } from 'redux-actions';
 import { combineReducers } from 'redux';
+import { handleActions, createActions } from 'redux-actions';
 
-const {
-  auth: { request: getAuthRequest, success: getAuthSuccess, logout: setAuthLogout },
-} = createActions({
-  AUTH: {
-    REQUEST: null,
-    SUCCESS: null,
-    LOGOUT: null,
-  },
-});
+const { authorize, logout } = createActions('AUTHORIZE', 'LOGOUT');
 
-export const key = handleActions(
+const isAuthorized = handleActions(
   {
-    [getAuthRequest]: (state, action) => action.payload, // сохранили в redux введенные данные
+    [authorize]: () => true,
+    [logout]: () => false,
   },
-  null,
-); //  вторым аргументом  - значение initialState
-
-export const isAuthorized = handleActions(
-  {
-    [getAuthRequest]: () => false,
-    [getAuthSuccess]: () => true,
-    [setAuthLogout]: () => false,
-  },
-  true, // !!!! false
+  false,
 );
 
-export default combineReducers({ key, isAuthorized }); //экспорт редюсеров
+export default combineReducers({
+  isAuthorized,
+});
 
-export { getAuthRequest, getAuthSuccess, setAuthLogout }; // экспорт экшенов
+export { authorize, logout };
 
-export const login = state => state.auth.getAuthRequest;
-export const getIsAuthorized = state => state.auth.isAuthorized; // экспорт селекторов
-export const logout = state => state.auth.setAuthLogout;
+export const getIsAuthorized = state => state.auth.isAuthorized;
+
+//-------------------------------------------------------------------------------------------------------------------
 
 // import {getAuthRequest, getAuthSuccess, getAuthFailure} from 'actions/auth';
 
